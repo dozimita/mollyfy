@@ -281,7 +281,19 @@
                 width: 42px;
                 height: 42px;
             }
-        }
+}
+	.cover {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+	.cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
     </style>
 </head>
 
@@ -345,13 +357,15 @@
         const songs = [
             {
                 title: "Bleed for you",
-                artist: "Unknown Artist",
-                file: "songs/Bleed for you.mp3"
+                artist: "dozi AI",
+                file: "songs/Bleed for you.mp3",
+		cover:"covers/Bleed for you.jpeg"
             },
             {
                 title: "Molly",
-                artist: "Unknown Artist",
-                file: "songs/Molly.mp3"
+                artist: "lim",
+                file: "songs/Molly.mp3",
+		cover:"covers/Molly.png"
             },
             {
                 title: "Zyphor",
@@ -374,7 +388,9 @@
                 const card = document.createElement("div");
                 card.className = "song";
                 card.innerHTML = `
-                    <div class="cover">♫</div>
+                    <div class="cover">
+    ${song.cover ? `<img src="${song.cover}" alt="${song.title} cover">` : "♫"}
+</div>
                     <h3>${song.title}</h3>
                     <p>${song.artist}</p>
                 `;
