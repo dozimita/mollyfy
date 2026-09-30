@@ -1,42 +1,462 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mollyfy</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #121212;
+            margin: 0;
+            background: #121212;
             color: white;
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 100px;
+            padding-bottom: 110px;
         }
 
-        h1 {
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100%;
+            background: #080808;
+            padding: 25px 20px;
+        }
+
+        .logo {
             color: #1ed760;
-            font-size: 50px;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 40px;
         }
 
-        p {
+        .nav a {
+            display: block;
             color: #b3b3b3;
-            font-size: 18px;
+            text-decoration: none;
+            padding: 14px 5px;
+            font-size: 16px;
         }
 
-        button {
-            background-color: #1ed760;
-            color: black;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 30px;
-            font-size: 16px;
+        .nav a:hover {
+            color: white;
+        }
+
+        main {
+            margin-left: 220px;
+            padding: 30px;
+        }
+
+        .welcome {
+            background: linear-gradient(120deg, #244b35, #17251d);
+            border-radius: 15px;
+            padding: 35px;
+            margin-bottom: 35px;
+        }
+
+        .welcome h1 {
+            font-size: 36px;
+            margin: 0 0 10px;
+        }
+
+        .welcome p {
+            color: #c5d7cb;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .songs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 18px;
+        }
+
+        .song {
+            background: #1c1c1c;
+            padding: 15px;
+            border-radius: 10px;
             cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .song:hover {
+            background: #292929;
+        }
+
+        .cover {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1ed760, #12452a);
+            display: grid;
+            place-items: center;
+            font-size: 48px;
+            margin-bottom: 14px;
+        }
+
+        .song h3 {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .song p {
+            margin: 5px 0;
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        .player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            min-height: 90px;
+            background: #181818;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 12px 25px;
+        }
+
+        .now-playing {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 25%;
+            min-width: 0;
+        }
+
+        .mini-cover {
+            width: 52px;
+            height: 52px;
+            border-radius: 6px;
+            background: #1ed760;
+            display: grid;
+            place-items: center;
+            color: #111;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .track-info {
+            min-width: 0;
+        }
+
+        .track-info strong,
+        .track-info span {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .track-info span {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .controls {
+            flex: 1;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
+            margin-bottom: 8px;
+        }
+
+        .buttons button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .buttons .play {
+            background: #1ed760;
+            color: #111;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 17px;
+        }
+
+        .progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #aaa;
+            font-size: 11px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            accent-color: #1ed760;
+            cursor: pointer;
+        }
+
+        .volume {
+            width: 20%;
+            max-width: 150px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 650px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                padding: 12px 18px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .logo {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .nav {
+                display: flex;
+                gap: 12px;
+            }
+
+            .nav a {
+                padding: 8px 0;
+                font-size: 13px;
+            }
+
+            main {
+                margin: 0;
+                padding: 20px 15px;
+            }
+
+            .welcome {
+                padding: 25px 20px;
+            }
+
+            .welcome h1 {
+                font-size: 27px;
+            }
+
+            .player {
+                gap: 8px;
+                padding: 10px;
+                flex-wrap: wrap;
+            }
+
+            .now-playing {
+                width: 42%;
+            }
+
+            .controls {
+                flex: 1;
+                min-width: 45%;
+            }
+
+            .volume {
+                display: none;
+            }
+
+            .mini-cover {
+                width: 42px;
+                height: 42px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1>Mollyfy 🎵</h1>
-    <p>Your music. Your world.</p>
-    <button>▶ Play Music</button>
+
+    <aside class="sidebar">
+        <div class="logo">♫ mollyfy</div>
+        <nav class="nav">
+            <a href="#">⌂ Home</a>
+            <a href="#library">▦ Your Library</a>
+        </nav>
+    </aside>
+
+    <main>
+        <section class="welcome">
+            <p>YOUR MUSIC. YOUR WORLD.</p>
+            <h1>Welcome to Mollyfy 🎵</h1>
+            <p>Every song has a story. Find yours here.</p>
+        </section>
+
+        <section id="library">
+            <h2>Your music</h2>
+            <div class="songs" id="songList"></div>
+        </section>
+    </main>
+
+    <audio id="audio"></audio>
+
+    <footer class="player">
+        <div class="now-playing">
+            <div class="mini-cover">♫</div>
+            <div class="track-info">
+                <strong id="currentTitle">Choose a song</strong>
+                <span id="currentArtist">Mollyfy Library</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="buttons">
+                <button onclick="previousSong()" aria-label="Previous song">⏮</button>
+                <button class="play" id="playButton"
+                    onclick="togglePlay()" aria-label="Play or pause">▶</button>
+                <button onclick="nextSong()" aria-label="Next song">⏭</button>
+            </div>
+            <div class="progress">
+                <span id="currentTime">0:00</span>
+                <input type="range" id="seekBar" min="0" max="100"
+                    value="0">
+                <span id="duration">0:00</span>
+            </div>
+        </div>
+
+        <div class="volume">
+            <span>🔊</span>
+            <input type="range" id="volumeBar" min="0" max="1"
+                step="0.01" value="0.7">
+        </div>
+    </footer>
+
+    <script>
+        const songs = [
+            {
+                title: "Bleed for you",
+                artist: "Unknown Artist",
+                file: "songs/Bleed for you.mp3"
+            },
+            {
+                title: "Molly",
+                artist: "Unknown Artist",
+                file: "songs/Molly.mp3"
+            },
+            {
+                title: "Zyphor",
+                artist: "Unknown Artist",
+                file: "songs/Zyphor.mp3"
+            }
+        ];
+
+        const audio = document.getElementById("audio");
+        const playButton = document.getElementById("playButton");
+        const seekBar = document.getElementById("seekBar");
+        const songList = document.getElementById("songList");
+
+        let currentIndex = 0;
+
+        function renderSongs() {
+            songList.innerHTML = "";
+
+            songs.forEach((song, index) => {
+                const card = document.createElement("div");
+                card.className = "song";
+                card.innerHTML = `
+                    <div class="cover">♫</div>
+                    <h3>${song.title}</h3>
+                    <p>${song.artist}</p>
+                `;
+                card.addEventListener("click", () => playSong(index));
+                songList.appendChild(card);
+            });
+        }
+
+        function playSong(index) {
+            currentIndex = index;
+            const song = songs[currentIndex];
+
+            audio.src = song.file;
+            document.getElementById("currentTitle").textContent = song.title;
+            document.getElementById("currentArtist").textContent = song.artist;
+
+            audio.play().then(() => {
+                playButton.textContent = "Ⅱ";
+            }).catch(() => {
+                playButton.textContent = "▶";
+                alert("Couldn't play this song. Check the filename and songs folder.");
+            });
+        }
+
+        function togglePlay() {
+            if (!audio.src) {
+                playSong(currentIndex);
+                return;
+            }
+
+            if (audio.paused) {
+                audio.play().then(() => {
+                    playButton.textContent = "Ⅱ";
+                });
+            } else {
+                audio.pause();
+                playButton.textContent = "▶";
+            }
+        }
+
+        function nextSong() {
+            currentIndex = (currentIndex + 1) % songs.length;
+            playSong(currentIndex);
+        }
+
+        function previousSong() {
+            currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+            playSong(currentIndex);
+        }
+
+        function formatTime(seconds) {
+            if (!Number.isFinite(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return mins + ":" + String(secs).padStart(2, "0");
+        }
+
+        audio.addEventListener("timeupdate", () => {
+            if (audio.duration) {
+                seekBar.value = (audio.currentTime / audio.duration) * 100;
+                document.getElementById("currentTime").textContent =
+                    formatTime(audio.currentTime);
+                document.getElementById("duration").textContent =
+                    formatTime(audio.duration);
+            }
+        });
+
+        seekBar.addEventListener("input", () => {
+            if (audio.duration) {
+                audio.currentTime = (seekBar.value / 100) * audio.duration;
+            }
+        });
+
+        document.getElementById("volumeBar").addEventListener("input", (event) => {
+            audio.volume = Number(event.target.value);
+        });
+
+        audio.addEventListener("ended", nextSong);
+
+        renderSongs();
+        audio.volume = 0.7;
+    </script>
+
 </body>
 </html>
